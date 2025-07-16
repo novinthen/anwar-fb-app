@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { Analytics } from '@vercel/analytics/react';
 
 // Main App component
 const App = () => {
@@ -121,66 +122,66 @@ const App = () => {
         generateFacebookPost();
     }, []);
 
-    return (
-        <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center p-4 font-sans">
-            {/* The script and link tags for Tailwind CSS and Inter font are now in public/index.html */}
-            {/* The style block for body font-family is now in src/index.css */}
+return (
+ <> {/* ADD THIS LINE: Opening React Fragment */}
+         <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center p-4 font-sans">
+             {/* The script and link tags for Tailwind CSS and Inter font are now in public/index.html */}
+             {/* The style block for body font-family is now in src/index.css */}
 
-            <div className="bg-white p-8 rounded-xl shadow-2xl max-w-2xl w-full text-center border border-gray-200">
-                <h1 className="text-3xl font-bold text-indigo-800 mb-2">
-                    <span className="text-blue-600">Sokongan</span> Untuk Perdana Menteri Anwar Ibrahim
-                </h1>
-                <p className="text-gray-500 text-sm mb-6">
-                    Powered by Cabang Sungai Siput
-                </p>
-                <p className="text-gray-600 mb-8">
-                    Jana posting Facebook unik untuk menunjukkan sokongan anda!
-                </p>
+             <div className="bg-white p-8 rounded-xl shadow-2xl max-w-2xl w-full text-center border border-gray-200">
+                 <h1 className="text-3xl font-bold text-indigo-800 mb-2">
+                     <span className="text-blue-600">Sokongan</span> Untuk Perdana Menteri Anwar Ibrahim
+                 </h1>
+                 <p className="text-gray-500 text-sm mb-6">
+                     Powered by Cabang Sungai Siput
+                 </p>
+                 <p className="text-gray-600 mb-8">
+                     Jana posting Facebook unik untuk menunjukkan sokongan anda!
+                 </p>
 
-                <div className="bg-blue-50 border border-blue-200 rounded-lg p-6 mb-8 min-h-[150px] flex items-center justify-center">
-                    {isLoading ? (
-                        <div className="flex flex-col items-center">
-                            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500 mb-2"></div>
-                            <p className="text-blue-700">Sedang menjana posting...</p>
-                        </div>
-                    ) : error ? (
-                        <p className="text-red-600 font-medium">{error}</p>
-                    ) : (
-                        <p className="text-gray-800 leading-relaxed text-lg whitespace-pre-wrap">{postContent}</p>
-                    )}
-                </div>
+                 <div className="bg-blue-50 border border-blue-200 rounded-lg p-6 mb-8 min-h-[150px] flex items-center justify-center">
+                     {isLoading ? (
+                         <div className="flex flex-col items-center">
+                             <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500 mb-2"></div>
+                             <p className="text-blue-700">Sedang menjana posting...</p>
+                         </div>
+                     ) : error ? (
+                         <p className="text-red-600 font-medium">{error}</p>
+                     ) : (
+                         <p className="text-gray-800 leading-relaxed text-lg whitespace-pre-wrap">{postContent}</p>
+                     )}
+                 </div>
 
-                <div className="flex flex-col sm:flex-row justify-center items-center gap-4 mb-4">
-                    <button
-                        onClick={generateFacebookPost}
-                        className="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 px-6 rounded-full shadow-lg transform transition duration-300 ease-in-out hover:scale-105 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-opacity-75 w-full sm:w-auto"
-                        disabled={isLoading}
-                    >
-                        {isLoading ? 'Menjana...' : 'Jana Posting Baharu'}
-                    </button>
+                 <div className="flex flex-col sm:flex-row justify-center items-center gap-4 mb-4">
+                     <button
+                         onClick={generateFacebookPost}
+                         className="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 px-6 rounded-full shadow-lg transform transition duration-300 ease-in-out hover:scale-105 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-opacity-75 w-full sm:w-auto"
+                         disabled={isLoading}
+                     >
+                         {isLoading ? 'Menjana...' : 'Jana Posting Baharu'}
+                     </button>
 
-                    <button
-                        onClick={copyToClipboard}
-                        className="bg-green-500 hover:bg-green-600 text-white font-bold py-3 px-6 rounded-full shadow-lg transform transition duration-300 ease-in-out hover:scale-105 focus:outline-none focus:ring-2 focus:ring-green-400 focus:ring-opacity-75 w-full sm:w-auto"
-                        disabled={isLoading || !postContent || error} // Disable if loading, no content, or error
-                    >
-                        Salin Posting
-                    </button>
-                </div>
+                     <button
+                         onClick={copyToClipboard}
+                         className="bg-green-500 hover:bg-green-600 text-white font-bold py-3 px-6 rounded-full shadow-lg transform transition duration-300 ease-in-out hover:scale-105 focus:outline-none focus:ring-2 focus:ring-green-400 focus:ring-opacity-75 w-full sm:w-auto"
+                         disabled={isLoading || !postContent || error} // Disable if loading, no content, or error
+                     >
+                         Salin Posting
+                     </button>
+                 </div>
 
-                {copySuccess && (
-                    <p className="text-green-600 font-semibold text-sm mt-2 animate-bounce">
-                        {copySuccess}
-                    </p>
-                )}
+                 {copySuccess && (
+                     <p className="text-green-600 font-semibold text-sm mt-2 animate-bounce">
+                         {copySuccess}
+                     </p>
+                 )}
 
-                {/* Optional: Add a small footer for context */}
-                <p className="text-gray-400 text-sm mt-8">
-                    Posting dijana berdasarkan maklumat awam mengenai pencapaian Perdana Menteri Anwar Ibrahim.
-                </p>
-            </div>
-        </div>
-    );
-};
-
-export default App;
+                 {/* Optional: Add a small footer for context */}
+                 <p className="text-gray-400 text-sm mt-8">
+                     Posting dijana berdasarkan maklumat awam mengenai pencapaian Perdana Menteri Anwar Ibrahim.
+                 </p>
+             </div>
+         </div>
+         <Analytics /> {/* ADD THIS LINE: The Analytics component */}
+     </> // ADD THIS LINE: Closing React Fragment
+ );
