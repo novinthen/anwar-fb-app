@@ -63,7 +63,7 @@ const App = () => {
             let chatHistory = [];
             chatHistory.push({ role: "user", parts: [{ text: prompt }] });
             const payload = { contents: chatHistory };
-            const apiKey = "AIzaSyCfamZriWYgRDkKxpxTYt1YDSEq2DSbmS0"; // PENTING: Gantikan dengan kunci API sebenar anda
+            const apiKey = process.env.REACT_APP_GEMINI_API_KEY; // PENTING: Gantikan dengan kunci API sebenar anda
 
             const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
 
