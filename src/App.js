@@ -5,6 +5,7 @@ const App = () => {
     const [postContent, setPostContent] = useState('Sedang menjana posting...');
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState(null);
+    const [copySuccess, setCopySuccess] = useState(''); // State for copy success message
 
     // List of 30 points about Anwar Ibrahim's leadership and achievements
     // Excluded: "Akta Tanggungjawab Fiskal (FRA)" and "Nyahjenayah Percubaan Membunuh Diri"
@@ -44,6 +45,7 @@ const App = () => {
         setIsLoading(true);
         setError(null);
         setPostContent('Sedang menjana posting...'); // Reset content while loading
+        setCopySuccess(''); // Clear copy success message on new generation
 
         // Select a few random themes to ensure variety in prompts
         const selectedThemes = [];
@@ -63,7 +65,8 @@ const App = () => {
             let chatHistory = [];
             chatHistory.push({ role: "user", parts: [{ text: prompt }] });
             const payload = { contents: chatHistory };
-            const apiKey = process.env.REACT_APP_GEMINI_API_KEY; // PENTING: Gantikan dengan kunci API sebenar anda
+            // >>> IMPORTANT: Replace "YOUR_GENERATED_API_KEY_HERE" with your actual API key <<<
+            const apiKey = process.env.REACT_APP_GEMINI_API_KEY; 
 
             const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
 
@@ -147,13 +150,29 @@ const App = () => {
                     )}
                 </div>
 
-                <button
-                    onClick={generateFacebookPost}
-                    className="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 px-6 rounded-full shadow-lg transform transition duration-300 ease-in-out hover:scale-105 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-opacity-75"
-                    disabled={isLoading}
-                >
-                    {isLoading ? 'Menjana...' : 'Jana Posting Baharu'}
-                </button>
+                <div className="flex flex-col sm:flex-row justify-center items-center gap-4 mb-4">
+                    <button
+                        onClick={generateFacebookPost}
+                        className="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 px-6 rounded-full shadow-lg transform transition duration-300 ease-in-out hover:scale-105 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-opacity-75 w-full sm:w-auto"
+                        disabled={isLoading}
+                    >
+                        {isLoading ? 'Menjana...' : 'Jana Posting Baharu'}
+                    </button>
+
+                    <button
+                        onClick={copyToClipboard}
+                        className="bg-green-500 hover:bg-green-600 text-white font-bold py-3 px-6 rounded-full shadow-lg transform transition duration-300 ease-in-out hover:scale-105 focus:outline-none focus:ring-2 focus:ring-green-400 focus:ring-opacity-75 w-full sm:w-auto"
+                        disabled={isLoading || !postContent || error} // Disable if loading, no content, or error
+                    >
+                        Salin Posting
+                    </button>
+                </div>
+
+                {copySuccess && (
+                    <p className="text-green-600 font-semibold text-sm mt-2 animate-bounce">
+                        {copySuccess}
+                    </p>
+                )}
 
                 {/* Optional: Add a small footer for context */}
                 <p className="text-gray-400 text-sm mt-8">
