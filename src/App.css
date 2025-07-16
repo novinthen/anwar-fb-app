@@ -1,0 +1,12 @@
+/* Pastikan ini ada di App.css atau index.css */
+body {
+  margin: 0;
+  font-family: 'Inter', sans-serif; /* Pastikan fon Inter digunakan */
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+    monospace;
+}
