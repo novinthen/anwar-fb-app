@@ -99,6 +99,20 @@ const App = () => {
         }
     };
 
+    // Function to copy post content to clipboard
+    const copyToClipboard = () => {
+        // Create a temporary textarea element to hold the text
+        const textarea = document.createElement('textarea');
+        textarea.value = postContent;
+        document.body.appendChild(textarea);
+        textarea.select(); // Select the text
+        document.execCommand('copy'); // Copy the selected text
+        document.body.removeChild(textarea); // Remove the temporary textarea
+
+        setCopySuccess('Disalin!'); // Set success message
+        setTimeout(() => setCopySuccess(''), 2000); // Clear message after 2 seconds
+    };
+
     // Initial generation on component mount
     useEffect(() => {
         generateFacebookPost();
