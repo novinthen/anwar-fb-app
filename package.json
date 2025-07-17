@@ -37,7 +37,7 @@
       "last 1 safari version"
     ]
   },
-  "engines": {  <-- ADD THIS BLOCK
+  "engines": {
     "node": "18.x"
   }
 }
