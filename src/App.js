@@ -184,3 +184,6 @@ return (
          <Analytics /> {/* ADD THIS LINE: The Analytics component */}
      </> // ADD THIS LINE: Closing React Fragment
  );
+};
+
+export default App; 
