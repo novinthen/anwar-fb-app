@@ -6,7 +6,8 @@ const App = () => {
     const [postContent, setPostContent] = useState('Sedang menjana posting...');
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState(null);
-    const [copySuccess, setCopySuccess] = useState(''); // State for copy success message
+    const [copySuccess, setCopySuccess] = useState('');
+    const [dialect, setDialect] = useState('malay'); // New state for dialect: 'malay' or 'kelantan'
 
     // List of 30 points about Anwar Ibrahim's leadership and achievements
     // Excluded: "Akta Tanggungjawab Fiskal (FRA)" and "Nyahjenayah Percubaan Membunuh Diri"
@@ -15,8 +16,8 @@ const App = () => {
         "Majoriti Dua Pertiga di Parlimen: Pentadbiran beliau kini memegang majoriti dua pertiga di Parlimen, memberikan kestabilan yang diperlukan untuk melaksanakan dasar dengan berkesan.",
         "Peningkatan Sokongan Rakyat dan Ketabahan Kepimpinan: Rating kelulusan Perdana Menteri telah meningkat kepada 54-55 peratus, mencerminkan kepercayaan rakyat terhadap kepimpinan beliau, walaupun menghadapi penjara dan penganiayaan politik, karisma dan ketabahan Anwar mendapat sokongan ramai.",
         "Keyakinan Terhadap Hala Tuju Negara: Terdapat penurunan dalam jumlah pengundi yang menganggap negara sedang menuju ke arah yang salah, menunjukkan sentimen yang lebih positif terhadap hala tuju negara.",
-        "Tadbir Urus Berbilang Kaum dan Keterangkungan: Sebagai Perdana Menteri pertama dari parti berbilang kaum, beliau mempromosikan keterangkungan dalam masyarakat pelbagai etnik, menggubbal dasar yang mengimbangi hak orang Melayu dengan keadilan untuk komuniti minoriti Cina dan India, mengurangkan polarisasi.",
-        "Pertumbuhan KDNK yang Mengagumkan: Ekonomi Malaysia mencatatkan pertumbuhan Keluaran Dalam Negara Kasar (KDNK) yang kukuh sebanyak 5.1 peratus pada tahun 2024, mengatasi unjuran asal, membuktikan keberkesanan Dasar Ekonomi MADANI.",
+        "Tadbir Urus Berbilang Kaum dan Keterangkuman: Sebagai Perdana Menteri pertama dari parti berbilang kaum, beliau mempromosikan keterangkuman dalam masyarakat pelbagai etnik, menggubbal dasar yang mengimbangi hak orang Melayu dengan keadilan untuk komuniti minoriti Cina dan India, mengurangkan polarisasi.",
+        "Pertumbuhan KDNK yang Mengagumkan: Ekonomi Malaysia mencatatkan pertumbuhan Keluaran Dalam Negara Karar (KDNK) yang kukuh sebanyak 5.1 peratus pada tahun 2024, mengatasi unjuran asal, membuktikan keberkesanan Dasar Ekonomi MADANI.",
         "Pelaburan Diluluskan Tertinggi dalam Sejarah: Malaysia mencatatkan jumlah pelaburan diluluskan tertinggi sebanyak RM329.5 bilion pada tahun 2023, menunjukkan pemulihan dan kebangkitan semula ekonomi.",
         "Daya Tarikan Pelaburan Asing yang Signifikan: Pelaburan asing merupakan penyumbang utama sebanyak 57.2 peratus daripada jumlah pelaburan diluluskan, dengan syarikat global seperti Tesla dan Intel membuka atau meningkatkan operasi di Malaysia, mengukuhkan kedudukan ekonomi global negara.",
         "Pengurusan Fiskal yang Berhemat: Kerajaan berjaya mengurangkan defisit fiskal kepada 4.1 peratus pada 2024, lebih baik daripada sasaran awal, menunjukkan komitmen terhadap kemampanan kewangan jangka panjang.",
@@ -59,14 +60,21 @@ const App = () => {
             }
         }
 
-        // Modified prompt to explicitly ask for ONE posting with sentence limits
-        const prompt = `Sebagai seorang penyokong teguh Perdana Menteri Anwar Ibrahim, tulis SATU posting Facebook yang unik dan meyakinkan dalam Bahasa Melayu. Posting ini perlu antara 6 hingga 10 ayat. Sorot sekurang-kurangnya dua hingga tiga pencapaian atau ciri kepimpinan beliau yang penting, berdasarkan poin-poin berikut: ${selectedThemes.join('; ')}. Pastikan nada positif, bersemangat, dan bermotivasi untuk menggalakkan sokongan berterusan. Elakkan pengulangan idea yang sama dalam setiap ayat. Setiap posting mestilah sangat berbeza dari posting lain yang telah dijana sebelum ini.`;
+        let dialectInstruction = "";
+        if (dialect === 'kelantan') {
+            dialectInstruction = "dalam Loghat Kelantan";
+        } else {
+            dialectInstruction = "dalam Bahasa Melayu Standard";
+        }
+
+        // Modified prompt to explicitly ask for ONE posting with sentence limits and dialect
+        const prompt = `Sebagai seorang penyokong teguh Perdana Menteri Anwar Ibrahim, tulis SATU posting Facebook yang unik dan meyakinkan ${dialectInstruction}. Posting ini perlu antara 6 hingga 10 ayat. Sorot sekurang-kurangnya dua hingga tiga pencapaian atau ciri kepimpinan beliau yang penting, berdasarkan poin-poin berikut: ${selectedThemes.join('; ')}. Pastikan nada positif, bersemangat, dan bermotivasi untuk menggalakkan sokongan berterusan. Elakkan pengulangan idea yang sama dalam setiap ayat. Setiap posting mestilah sangat berbeza dari posting lain yang telah dijana sebelum ini.`;
 
         try {
             let chatHistory = [];
             chatHistory.push({ role: "user", parts: [{ text: prompt }] });
             const payload = { contents: chatHistory };
-            // >>> IMPORTANT: Replace "YOUR_GENERATED_API_KEY_HERE" with your actual API key <<<
+            // Kunci API kini diambil dari pemboleh ubah persekitaran Vercel
             const apiKey = process.env.REACT_APP_GEMINI_API_KEY; 
 
             const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
@@ -105,85 +113,105 @@ const App = () => {
 
     // Function to copy post content to clipboard
     const copyToClipboard = () => {
-        // Create a temporary textarea element to hold the text
         const textarea = document.createElement('textarea');
         textarea.value = postContent;
         document.body.appendChild(textarea);
-        textarea.select(); // Select the text
-        document.execCommand('copy'); // Copy the selected text
-        document.body.removeChild(textarea); // Remove the temporary textarea
+        textarea.select();
+        document.execCommand('copy');
+        document.body.removeChild(textarea);
 
-        setCopySuccess('Disalin!'); // Set success message
-        setTimeout(() => setCopySuccess(''), 2000); // Clear message after 2 seconds
+        setCopySuccess('Disalin!');
+        setTimeout(() => setCopySuccess(''), 2000);
     };
 
-    // Initial generation on component mount
+    // Trigger post generation when dialect changes
     useEffect(() => {
         generateFacebookPost();
-    }, []);
-return (
- <> {/* ADD THIS LINE: Opening React Fragment */}
-         <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center p-4 font-sans">
-             {/* The script and link tags for Tailwind CSS and Inter font are now in public/index.html */}
-             {/* The style block for body font-family is now in src/index.css */}
+    }, [dialect]); // Re-run effect when dialect state changes
 
-             <div className="bg-white p-8 rounded-xl shadow-2xl max-w-2xl w-full text-center border border-gray-200">
-                 <h1 className="text-3xl font-bold text-indigo-800 mb-2">
-                     <span className="text-blue-600">Sokongan</span> Untuk Perdana Menteri Anwar Ibrahim
-                 </h1>
-                 <p className="text-gray-500 text-sm mb-6">
-                     Powered by Cabang Sungai Siput
-                 </p>
-                 <p className="text-gray-600 mb-8">
-                     Jana posting Facebook unik untuk menunjukkan sokongan anda!
-                 </p>
+    return (
+        <>
+            <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center p-4 font-sans">
+                <div className="bg-white p-8 rounded-xl shadow-2xl max-w-2xl w-full text-center border border-gray-200">
+                    <h1 className="text-3xl font-bold text-indigo-800 mb-2">
+                        <span className="text-blue-600">Sokongan</span> Untuk Perdana Menteri Anwar Ibrahim
+                    </h1>
+                    <p className="text-gray-500 text-sm mb-6">
+                        Powered by Cabang Sungai Siput
+                    </p>
+                    <p className="text-gray-600 mb-8">
+                        Jana posting Facebook unik untuk menunjukkan sokongan anda!
+                    </p>
 
-                 <div className="bg-blue-50 border border-blue-200 rounded-lg p-6 mb-8 min-h-[150px] flex items-center justify-center">
-                     {isLoading ? (
-                         <div className="flex flex-col items-center">
-                             <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500 mb-2"></div>
-                             <p className="text-blue-700">Sedang menjana posting...</p>
-                         </div>
-                     ) : error ? (
-                         <p className="text-red-600 font-medium">{error}</p>
-                     ) : (
-                         <p className="text-gray-800 leading-relaxed text-lg whitespace-pre-wrap">{postContent}</p>
-                     )}
-                 </div>
+                    {/* Dialect Selection Buttons */}
+                    <div className="flex justify-center items-center gap-4 mb-8">
+                        <button
+                            onClick={() => setDialect('malay')}
+                            className={`py-2 px-5 rounded-full font-semibold transition-all duration-300 ${
+                                dialect === 'malay'
+                                    ? 'bg-blue-600 text-white shadow-md'
+                                    : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+                            }`}
+                        >
+                            Bahasa Melayu Standard
+                        </button>
+                        <button
+                            onClick={() => setDialect('kelantan')}
+                            className={`py-2 px-5 rounded-full font-semibold transition-all duration-300 ${
+                                dialect === 'kelantan'
+                                    ? 'bg-blue-600 text-white shadow-md'
+                                    : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+                            }`}
+                        >
+                            Loghat Kelantan
+                        </button>
+                    </div>
 
-                 <div className="flex flex-col sm:flex-row justify-center items-center gap-4 mb-4">
-                     <button
-                         onClick={generateFacebookPost}
-                         className="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 px-6 rounded-full shadow-lg transform transition duration-300 ease-in-out hover:scale-105 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-opacity-75 w-full sm:w-auto"
-                         disabled={isLoading}
-                     >
-                         {isLoading ? 'Menjana...' : 'Jana Posting Baharu'}
-                     </button>
+                    <div className="bg-blue-50 border border-blue-200 rounded-lg p-6 mb-8 min-h-[150px] flex items-center justify-center">
+                        {isLoading ? (
+                            <div className="flex flex-col items-center">
+                                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500 mb-2"></div>
+                                <p className="text-blue-700">Sedang menjana posting...</p>
+                            </div>
+                        ) : error ? (
+                            <p className="text-red-600 font-medium">{error}</p>
+                        ) : (
+                            <p className="text-gray-800 leading-relaxed text-lg whitespace-pre-wrap">{postContent}</p>
+                        )}
+                    </div>
 
-                     <button
-                         onClick={copyToClipboard}
-                         className="bg-green-500 hover:bg-green-600 text-white font-bold py-3 px-6 rounded-full shadow-lg transform transition duration-300 ease-in-out hover:scale-105 focus:outline-none focus:ring-2 focus:ring-green-400 focus:ring-opacity-75 w-full sm:w-auto"
-                         disabled={isLoading || !postContent || error} // Disable if loading, no content, or error
-                     >
-                         Salin Posting
-                     </button>
-                 </div>
+                    <div className="flex flex-col sm:flex-row justify-center items-center gap-4 mb-4">
+                        <button
+                            onClick={generateFacebookPost}
+                            className="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 px-6 rounded-full shadow-lg transform transition duration-300 ease-in-out hover:scale-105 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-opacity-75 w-full sm:w-auto"
+                            disabled={isLoading}
+                        >
+                            {isLoading ? 'Menjana...' : 'Jana Posting Baharu'}
+                        </button>
 
-                 {copySuccess && (
-                     <p className="text-green-600 font-semibold text-sm mt-2 animate-bounce">
-                         {copySuccess}
-                     </p>
-                 )}
+                        <button
+                            onClick={copyToClipboard}
+                            className="bg-green-500 hover:bg-green-600 text-white font-bold py-3 px-6 rounded-full shadow-lg transform transition duration-300 ease-in-out hover:scale-105 focus:outline-none focus:ring-2 focus:ring-green-400 focus:ring-opacity-75 w-full sm:w-auto"
+                            disabled={isLoading || !postContent || error}
+                        >
+                            Salin Posting
+                        </button>
+                    </div>
 
-                 {/* Optional: Add a small footer for context */}
-                 <p className="text-gray-400 text-sm mt-8">
-                     Posting dijana berdasarkan maklumat awam mengenai pencapaian Perdana Menteri Anwar Ibrahim.
-                 </p>
-             </div>
-         </div>
-         <Analytics /> {/* ADD THIS LINE: The Analytics component */}
-     </> // ADD THIS LINE: Closing React Fragment
- );
+                    {copySuccess && (
+                        <p className="text-green-600 font-semibold text-sm mt-2 animate-bounce">
+                            {copySuccess}
+                        </p>
+                    )}
+
+                    <p className="text-gray-400 text-sm mt-8">
+                        Posting dijana berdasarkan maklumat awam mengenai pencapaian Perdana Menteri Anwar Ibrahim.
+                    </p>
+                </div>
+            </div>
+            <Analytics />
+        </>
+    );
 };
 
-export default App; 
+export default App;
