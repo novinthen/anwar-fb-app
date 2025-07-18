@@ -7,7 +7,7 @@ const App = () => {
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState(null);
     const [copySuccess, setCopySuccess] = useState('');
-    const [dialect, setDialect] = useState('malay'); // New state for dialect: 'malay' or 'kelantan'
+    const [dialect, setDialect] = useState('malay'); // New state for dialect: 'malay', 'kelantan', or 'terengganu'
 
     // List of 30 points about Anwar Ibrahim's leadership and achievements
     // Excluded: "Akta Tanggungjawab Fiskal (FRA)" and "Nyahjenayah Percubaan Membunuh Diri"
@@ -16,7 +16,7 @@ const App = () => {
         "Majoriti Dua Pertiga di Parlimen: Pentadbiran beliau kini memegang majoriti dua pertiga di Parlimen, memberikan kestabilan yang diperlukan untuk melaksanakan dasar dengan berkesan.",
         "Peningkatan Sokongan Rakyat dan Ketabahan Kepimpinan: Rating kelulusan Perdana Menteri telah meningkat kepada 54-55 peratus, mencerminkan kepercayaan rakyat terhadap kepimpinan beliau, walaupun menghadapi penjara dan penganiayaan politik, karisma dan ketabahan Anwar mendapat sokongan ramai.",
         "Keyakinan Terhadap Hala Tuju Negara: Terdapat penurunan dalam jumlah pengundi yang menganggap negara sedang menuju ke arah yang salah, menunjukkan sentimen yang lebih positif terhadap hala tuju negara.",
-        "Tadbir Urus Berbilang Kaum dan Keterangkuman: Sebagai Perdana Menteri pertama dari parti berbilang kaum, beliau mempromosikan keterangkuman dalam masyarakat pelbagai etnik, menggubbal dasar yang mengimbangi hak orang Melayu dengan keadilan untuk komuniti minoriti Cina dan India, mengurangkan polarisasi.",
+        "Tadbir Urus Berbilang Kaum dan Keterangkuman: Sebagai Perdana Menteri pertama dari parti berbilang kaum, beliau mempromosikan keterangkungan dalam masyarakat pelbagai etnik, menggubbal dasar yang mengimbangi hak orang Melayu dengan keadilan untuk komuniti minoriti Cina dan India, mengurangkan polarisasi.",
         "Pertumbuhan KDNK yang Mengagumkan: Ekonomi Malaysia mencatatkan pertumbuhan Keluaran Dalam Negara Karar (KDNK) yang kukuh sebanyak 5.1 peratus pada tahun 2024, mengatasi unjuran asal, membuktikan keberkesanan Dasar Ekonomi MADANI.",
         "Pelaburan Diluluskan Tertinggi dalam Sejarah: Malaysia mencatatkan jumlah pelaburan diluluskan tertinggi sebanyak RM329.5 bilion pada tahun 2023, menunjukkan pemulihan dan kebangkitan semula ekonomi.",
         "Daya Tarikan Pelaburan Asing yang Signifikan: Pelaburan asing merupakan penyumbang utama sebanyak 57.2 peratus daripada jumlah pelaburan diluluskan, dengan syarikat global seperti Tesla dan Intel membuka atau meningkatkan operasi di Malaysia, mengukuhkan kedudukan ekonomi global negara.",
@@ -63,7 +63,10 @@ const App = () => {
         let dialectInstruction = "";
         if (dialect === 'kelantan') {
             dialectInstruction = "dalam Loghat Kelantan";
-        } else {
+        } else if (dialect === 'terengganu') {
+            dialectInstruction = "dalam Loghat Terengganu";
+        }
+        else {
             dialectInstruction = "dalam Bahasa Melayu Standard";
         }
 
@@ -164,6 +167,16 @@ const App = () => {
                             }`}
                         >
                             Loghat Kelantan
+                        </button>
+                        <button
+                            onClick={() => setDialect('terengganu')}
+                            className={`py-2 px-5 rounded-full font-semibold transition-all duration-300 ${
+                                dialect === 'terengganu'
+                                    ? 'bg-blue-600 text-white shadow-md'
+                                    : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+                            }`}
+                        >
+                            Loghat Terengganu
                         </button>
                     </div>
 
